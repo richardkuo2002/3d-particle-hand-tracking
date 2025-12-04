@@ -41,15 +41,19 @@ class App {
 
     // Hand Tracker
     const videoElement = document.getElementById('input-video');
-    this.handTracker = new HandTracker(videoElement, (interactionValue) => {
-      // Callback when hand tracking updates
-      this.ui.updateTension(interactionValue);
-      this.ui.setTrackingStatus(interactionValue > 0 ? "Tracking Active" : "No Hand Detected");
-
-      // Smoothly update particle system target interaction
-      // We can do this directly or let the update loop handle it via a property
-      this.particleSystem.targetInteraction = interactionValue;
-    });
+    try {
+        this.handTracker = new HandTracker(videoElement, (interactionValue) => {
+            // Callback when hand tracking updates
+            this.ui.updateTension(interactionValue);
+            this.ui.setTrackingStatus(interactionValue > 0 ? "Tracking Active" : "No Hand Detected");
+            
+            // Smoothly update particle system target interaction
+            this.particleSystem.targetInteraction = interactionValue;
+        });
+    } catch (e) {
+        console.error("HandTracker init failed:", e);
+        this.ui.setTrackingStatus("Tracking Failed: " + e.message);
+    }
 
     // Lights (Optional for particles but good for standard materials)
     const ambientLight = new THREE.AmbientLight(0x404040);
