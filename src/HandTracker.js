@@ -45,14 +45,17 @@ export class HandTracker {
             .catch(err => {
                 console.error("Camera failed to start:", err);
                 if (this.onResultsCallback) {
-                    // Signal error via callback or UI
-                    // We'll handle this by updating the status in UI if possible, 
-                    // but here we just log. The UI class handles the text.
-                    const statusParams = { error: "Camera Error: " + err.message };
-                    // We can't pass object to the simple callback expecting float.
-                    // Let's rely on the UI checking for updates or main.js handling it.
-                    // Better: dispatch a custom event or just alert for now as a fallback.
-                    alert("Camera access failed. Please allow camera access and reload.");
+                    let msg = "Camera access failed.";
+                    if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                        msg = "Camera permission denied. Please click the lock icon in your address bar to allow camera access, then reload the page.";
+                    } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                        msg = "No camera found. Please ensure your webcam is connected.";
+                    } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+                        msg = "Camera is in use by another application.";
+                    }
+
+                    alert(msg);
+                    // Also update UI status if possible (via the callback we can't easily, but the main loop handles the status text)
                 }
             });
     }
