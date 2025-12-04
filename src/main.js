@@ -1,4 +1,3 @@
-```javascript
 import * as THREE from 'three';
 import { ParticleSystem } from './ParticleSystem.js';
 import { HandTracker } from './HandTracker.js';
@@ -42,17 +41,17 @@ class App {
     // Hand Tracker
     const videoElement = document.getElementById('input-video');
     try {
-        this.handTracker = new HandTracker(videoElement, (interactionValue) => {
-            // Callback when hand tracking updates
-            this.ui.updateTension(interactionValue);
-            this.ui.setTrackingStatus(interactionValue > 0 ? "Tracking Active" : "No Hand Detected");
-            
-            // Smoothly update particle system target interaction
-            this.particleSystem.targetInteraction = interactionValue;
-        });
+      this.handTracker = new HandTracker(videoElement, (interactionValue) => {
+        // Callback when hand tracking updates
+        this.ui.updateTension(interactionValue);
+        this.ui.setTrackingStatus(interactionValue > 0 ? "Tracking Active" : "No Hand Detected");
+
+        // Smoothly update particle system target interaction
+        this.particleSystem.targetInteraction = interactionValue;
+      });
     } catch (e) {
-        console.error("HandTracker init failed:", e);
-        this.ui.setTrackingStatus("Tracking Failed: " + e.message);
+      console.error("HandTracker init failed:", e);
+      this.ui.setTrackingStatus("Tracking Failed: " + e.message);
     }
 
     // Lights (Optional for particles but good for standard materials)
@@ -96,4 +95,3 @@ class App {
 }
 
 new App();
-```
