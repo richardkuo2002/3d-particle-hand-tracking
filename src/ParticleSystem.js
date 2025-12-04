@@ -114,8 +114,15 @@ export class ParticleSystem {
         const speed = 0.1;
 
         // Interaction value (0 to 1) controls expansion/explosion
-        // 0 = normal shape, 1 = fully expanded/exploded
-        const expansionFactor = 1 + interactionValue * 2.0;
+        // 0 = Open Hand (Low Tension) -> We want EXPANSION
+        // 1 = Closed Fist (High Tension) -> We want SHRINKING
+
+        // Previous: 1 + interactionValue * 2.0 (Closed = Big)
+        // New: Inverted. 
+        // Let's map 0 (Open) -> 5.0 (Large expansion)
+        // Let's map 1 (Closed) -> 0.5 (Shrunk)
+
+        const expansionFactor = 0.5 + (1 - interactionValue) * 4.5;
 
         for (let i = 0; i < this.particleCount; i++) {
             const ix = i * 3;
