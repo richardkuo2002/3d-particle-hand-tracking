@@ -122,9 +122,10 @@ export class ParticleSystem {
         if (interactionValue === -1) {
             targetScale = 1.0;
         } else {
-            // Map 0..1 to 8.0..0.1
+            // Map 0 (Open) -> 8.0 (Max)
+            // Map 1 (Closed) -> 1.0 (Min - same as No Hand)
             const maxScale = 8.0;
-            const minScale = 0.1;
+            const minScale = 1.0;
             targetScale = maxScale - (interactionValue * (maxScale - minScale));
         }
 
