@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive 3D Particles</title>
+    <link rel="stylesheet" href="./style.css">
+  </head>
+  <body>
+    <div id="app"></div>
+    
+    <!-- UI Overlay -->
+    <div id="ui-container">
+        <div class="panel control-panel">
+            <h3>Templates</h3>
+            <div class="button-group">
+                <button data-shape="heart">Heart</button>
+                <button data-shape="flower">Flower</button>
+                <button data-shape="saturn">Saturn</button>
+                <button data-shape="buddha">Buddha</button>
+                <button data-shape="fireworks">Fireworks</button>
+            </div>
+        </div>
+
+        <div class="panel color-panel">
+            <h3>Color</h3>
+            <input type="color" id="color-picker" value="#ff0055">
+        </div>
+
+        <div class="panel status-panel">
+            <p>Hand Tracking: <span id="tracking-status">Initializing...</span></p>
+            <div class="tension-meter">
+                <div id="tension-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Element for MediaPipe (Hidden) -->
+    <video id="input-video" style="display: none;"></video>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
