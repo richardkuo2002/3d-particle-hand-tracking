@@ -43,10 +43,17 @@ class App {
     try {
       this.handTracker = new HandTracker(videoElement, (interactionValue) => {
         // Callback when hand tracking updates
-        this.ui.updateTension(interactionValue);
-        this.ui.setTrackingStatus(interactionValue > 0 ? "Tracking Active" : "No Hand Detected");
+        // interactionValue is -1 if no hand, 0..1 otherwise
 
-        // Smoothly update particle system target interaction
+        if (interactionValue === -1) {
+          this.ui.setTrackingStatus("No Hand Detected");
+          this.ui.updateTension(0); // Reset bar
+        } else {
+          this.ui.setTrackingStatus("Tracking Active");
+          this.ui.updateTension(interactionValue);
+        }
+
+        // Update particle system target
         this.particleSystem.targetInteraction = interactionValue;
       });
     } catch (e) {
@@ -77,17 +84,10 @@ class App {
     // Mock interaction value for now (e.g., pulsing)
     // const mockInteraction = (Math.sin(time) + 1) / 2 * 0.5;
     if (this.particleSystem) {
-      // Simple lerp for smoothness if not handled in ParticleSystem
-      // But ParticleSystem.update takes the value directly.
-      // Let's store a smoothed value in App or ParticleSystem.
-      // For now, let's assume HandTracker gives raw values and we smooth here.
-
-      const target = this.particleSystem.targetInteraction || 0;
-      const current = this.particleSystem.currentInteraction || 0;
-      const smoothed = current + (target - current) * 0.1;
-      this.particleSystem.currentInteraction = smoothed;
-
-      this.particleSystem.update(smoothed);
+      // Interaction smoothing is now handled inside ParticleSystem.update
+      // We just pass the raw target value (which might be -1)
+      const target = this.particleSystem.targetInteraction !== undefined ? this.particleSystem.targetInteraction : -1;
+      this.particleSystem.update(target);
     }
 
     this.renderer.render(this.scene, this.camera);

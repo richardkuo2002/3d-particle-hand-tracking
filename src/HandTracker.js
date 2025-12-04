@@ -72,7 +72,8 @@ export class HandTracker {
         }
 
         // Average tension if multiple hands
-        this.interactionValue = handCount > 0 ? totalTension / handCount : 0;
+        // Return -1 if no hands detected, so we can distinguish "No Hand" from "Open Hand" (0)
+        this.interactionValue = handCount > 0 ? totalTension / handCount : -1;
 
         // Smooth the value? Maybe later. For now raw is fine or simple lerp in main loop.
 

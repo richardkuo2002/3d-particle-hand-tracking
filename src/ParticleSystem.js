@@ -109,35 +109,46 @@ export class ParticleSystem {
         colorAttribute.needsUpdate = true;
     }
 
-    update(interactionValue = 0) {
+    update(interactionValue = -1) {
         const positions = this.geometry.attributes.position.array;
         const speed = 0.1;
 
-        // Interaction value (0 to 1) controls expansion/explosion
-        // 0 = Open Hand (Low Tension) -> We want EXPANSION
-        // 1 = Closed Fist (High Tension) -> We want SHRINKING
+        // Determine target scale based on interaction
+        // -1 = No Hand -> Default Scale (1.0)
+        // 0 = Open Hand -> Max Expansion (8.0)
+        // 1 = Closed Fist -> Min Scale (0.1)
 
-        // Previous: 1 + interactionValue * 2.0 (Closed = Big)
-        // New: Inverted. 
-        // Let's map 0 (Open) -> 5.0 (Large expansion)
-        // Let's map 1 (Closed) -> 0.5 (Shrunk)
+        let targetScale = 1.0;
+        if (interactionValue === -1) {
+            targetScale = 1.0;
+        } else {
+            // Map 0..1 to 8.0..0.1
+            const maxScale = 8.0;
+            const minScale = 0.1;
+            targetScale = maxScale - (interactionValue * (maxScale - minScale));
+        }
 
-        const expansionFactor = 0.5 + (1 - interactionValue) * 4.5;
+        // Initialize currentScale if not exists
+        if (this.currentScale === undefined) this.currentScale = 1.0;
+
+        // Smooth transition
+        this.currentScale += (targetScale - this.currentScale) * 0.1;
 
         for (let i = 0; i < this.particleCount; i++) {
             const ix = i * 3;
             const iy = i * 3 + 1;
             const iz = i * 3 + 2;
 
-            let tx = this.targetPositions[ix] * expansionFactor;
-            let ty = this.targetPositions[iy] * expansionFactor;
-            let tz = this.targetPositions[iz] * expansionFactor;
+            let tx = this.targetPositions[ix] * this.currentScale;
+            let ty = this.targetPositions[iy] * this.currentScale;
+            let tz = this.targetPositions[iz] * this.currentScale;
 
-            // Add some noise/jitter based on interaction
-            if (interactionValue > 0.1) {
-                tx += (Math.random() - 0.5) * interactionValue;
-                ty += (Math.random() - 0.5) * interactionValue;
-                tz += (Math.random() - 0.5) * interactionValue;
+            // Add some noise/jitter based on interaction (only when hands are active)
+            if (interactionValue !== -1 && interactionValue > 0.1) {
+                const jitter = interactionValue * 0.5; // Scale jitter with tension
+                tx += (Math.random() - 0.5) * jitter;
+                ty += (Math.random() - 0.5) * jitter;
+                tz += (Math.random() - 0.5) * jitter;
             }
 
             // Lerp towards target
