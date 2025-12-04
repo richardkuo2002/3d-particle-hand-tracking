@@ -2,7 +2,7 @@
 
 A real-time interactive 3D particle system that responds to hand gestures. Built with Three.js and MediaPipe.
 
-![Demo Preview](https://raw.githubusercontent.com/richardkuo2002/3d-particle-hand-tracking/main/public/vite.svg)
+![Demo Preview](https://raw.githubusercontent.com/richardkuo2002/3d-particle-hand-tracking/main/public/screenshot.png)
 *(Note: You can replace this with a real screenshot later)*
 
 ## 🚀 Live Demo
